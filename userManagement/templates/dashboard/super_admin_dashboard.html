@@ -1,0 +1,545 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Super Admin Dashboard</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+      .sidebar {
+        height: 100vh;
+        background-color: #343a40;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .sidebar a {
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+      }
+      .sidebar a:hover {
+        background-color: #495057;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        {% if 'Super Admin' in user_roles or 'Admin' in user_roles %}
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky" style="margin-top: 50px;">
+            <ul class="nav flex-column">
+              {% if 'Super Admin' in user_roles %}
+              <li class="nav-item">
+                <a class="nav-link" href="#manageUsersSection" id="manageUsersBtn">
+                  Manage Users
+                </a>
+              </li>
+              {% endif %}
+
+              {% if 'Super Admin' in user_roles or 'Admin' in user_roles%}
+              <li class="nav-item">
+                <a class="nav-link" href="#taskDetailsSection" id="viewTasksBtn">
+                  User Task Details
+                </a>
+              </li>
+              {% endif %}
+
+              <li class="nav-item">
+                <a class="nav-link"  href="{% url 'logout' %}">Logout</a>
+              </li>
+              </ul>
+          </div>
+        </nav>
+        {% endif %}
+    
+        <main class="col-md-{% if 'Super Admin' in user_roles or 'Admin' in user_roles %}10{% else %}12{% endif %} ml-sm-auto px-md-4" style="margin-top: 40px;">
+          {% if 'Super Admin' in user_roles or 'Admin' in user_roles %}
+          <div id="dashboardpage">
+            <h2>Dashboard Overview</h2>
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="card-text fs-4">{{ total_users|default:0 }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-success text-white">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Tasks</h5>
+                    <p class="card-text fs-4">{{ total_tasks|default:0 }}</p>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="col-md-4">
+                <div class="card bg-warning text-dark">
+                  <div class="card-body">
+                    <h5 class="card-title">ToDo Tasks</h5>
+                    <p class="card-text fs-4">{{ ToDo_tasks|default:0 }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <hr class="my-4" />
+          </div>
+          {% endif %}
+    
+          {% if 'Super Admin' in user_roles %}
+          <div id="manageUsersSection">
+            <div style="display: flex; justify-content: space-between">
+              <h4>Manage Users</h4>
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                id="createUserBtn"
+                data-bs-toggle="modal"
+                data-bs-target="#createUserModal"
+                style="cursor: pointer"
+              >
+                + Create User
+              </button>
+            </div>
+            <table class="table table-bordered table-striped mt-3">
+              <thead class="table-dark">
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role(s)</th>
+                  <th>Reporting Head</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    {% for role in user.role_labels %}
+                    <span class="badge bg-secondary">{{ role }}</span>
+                    {% empty %}
+                    <span>No Roles</span>
+                    {% endfor %}
+                  </td>
+                  <td>
+                    {{user.reporting_head_name}}
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-danger delete-user-btn"
+                      data-user-id="{{ user.id }}"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center">No users found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+    
+          {% if 'Super Admin' in user_roles or 'Admin' in user_roles %}
+          <div id="taskDetailsSection" {% if 'Admin' in user_roles %}style="display:block"{% else %}style="display: none"{% endif %}>
+            <div style="display: flex; justify-content: space-between">
+              <h4>User Task Details</h4>
+              {% if 'Super Admin' in user_roles or 'Admin' in user_roles %}
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                id="createTaskBtn"
+                data-bs-toggle="modal"
+                data-bs-target="#createTaskModal"
+                style="cursor: pointer"
+              >
+                + Create Task
+              </button>
+              {% endif %}
+            </div>
+            <table class="table table-bordered table-striped mt-3">
+              <thead class="table-dark">
+                <tr>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Email</th>
+                  <th>Total Tasks</th>
+                  <th>Completed</th>
+                  <th>ToDo</th>
+                  <th>View Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>{{ user.name }}</td>
+                  <td>
+                    {% for role in user.role_labels %}
+                    <span class="badge bg-secondary">{{ role }}</span>
+                    {% empty %}
+                    <span>No Roles</span>
+                    {% endfor %}
+                  </td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.total_tasks }}</td>
+                  <td>{{ user.completed_tasks }}</td>
+                  <td>{{ user.ToDo_tasks }}</td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-outline-primary view-user-tasks"
+                      data-user-id="{{ user.id }}"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center">No users found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+    
+          <div
+            class="container mt-4"
+            id="singleUserTaskSection"
+            style="display: none"
+          >
+            <!-- <button class="btn btn-secondary mb-3" id="backToDashboard">
+              ← Back to Dashboard
+            </button> -->
+            <br />
+            <h4>Task Details for <span id="selectedUserName"></span></h4>
+    
+            <table class="table table-bordered table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="userTaskTableBody">
+                </tbody>
+            </table>
+          </div>
+    
+          {% if 'User' in user_roles %}
+          <div id="userDashboardSection">
+            <h2>Your Tasks</h2>
+
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <div class="card bg-info text-white">
+                  <div class="card-body">
+                    <h5 class="card-title">Your Total Tasks</h5>
+                    <p class="card-text fs-4">{{ user_total_tasks|default:0 }}</p>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="col-md-4">
+                <div class="card bg-success text-white">
+                  <div class="card-body">
+                    <h5 class="card-title">Your Completed Tasks</h5>
+                    <p class="card-text fs-4">{{ user_completed_tasks|default:0 }}</p>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="col-md-4">
+                <div class="card bg-warning text-dark">
+                  <div class="card-body">
+                    <h5 class="card-title">Your ToDo Tasks</h5>
+                    <p class="card-text fs-4">{{ user_ToDo_tasks|default:0 }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <table class="table table-bordered table-striped mt-3">
+              <thead class="table-dark">
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for task in tasks %}
+                <tr>
+                  <td>{{ task.title }}</td>
+                  <td>{{ task.description|default:"" }}</td>
+                  <td>{{ task.status }}</td>
+                  <td>
+                    {% if task.status != "Completed" %}
+                      <button
+                        class="btn btn-sm btn-success complete-task-btn"
+                        data-task-id="{{ task.id }}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#makeasCompletedModal"
+                      >
+                        Mark as Complete
+                      </button>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">No tasks assigned to you.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+    
+        </main>
+    
+        {% if 'Super Admin' in user_roles %}
+        <div
+          class="modal fade"
+          id="createUserModal"
+          tabindex="-1"
+          aria-labelledby="createUserModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="createUserForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="createUserModalLabel">Create User</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input
+                      type="text"
+                      name="username"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      class="form-control"
+                      pattern="^[a-zA-Z\s]+$"
+                      title="Only letters and spaces allowed"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      class="form-control"
+                      minlength="6"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select
+                      name="role[]"
+                      id="role"
+                      class="form-select"
+                      multiple
+                      required
+                    >
+                      {% for role in roles %}
+                      <option value="{{ role.id }}">{{ role.label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+    
+                  <div class="mb-3" id="reportingHeadContainer" style="display: none;">
+                    <label for="reporting_head" class="form-label">Reporting Head</label>
+                    <select name="reporting_head" class="form-select">
+                      {% for admin in admin_users %}
+                      <option value="{{ admin.id }}">{{ admin.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+    
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Create</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    
+        {% if 'Super Admin' in user_roles or 'Admin' in user_roles %}
+        <div
+          class="modal fade"
+          id="createTaskModal"
+          tabindex="-1"
+          aria-labelledby="createTaskModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="createTaskForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="createTaskModalLabel">Create Task</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="title" class="form-label">Task Title</label>
+                    <input type="text" name="title" class="form-control" required />
+                  </div>
+    
+                  <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="description" class="form-control"></textarea>
+                  </div>
+    
+                  <div class="mb-3">
+                    <label for="assigned_to" class="form-label">Assign To</label>
+                    <select name="assigned_to" class="form-select" required>
+                      {% for user in users %}
+                      <option value="{{ user.id }}">{{ user.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+    
+                  <div class="mb-3">
+                    <label for="due_date" class="form-label">Due Date</label>
+                    <input
+                      type="datetime-local"
+                      name="due_date"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Create</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    
+        <div
+          class="modal fade"
+          id="makeasCompletedModal"
+          tabindex="-1"
+          aria-labelledby="makeasCompletedModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="makeasCompletedForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="createTaskModalLabel">Mark as Completed</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="completion_report">Completion Report:</label><br />
+                    <textarea
+                      id="completion_report"
+                      name="completion_report"
+                      rows="4"
+                      cols="40"
+                    ></textarea>
+                  </div>
+    
+                  <div class="mb-3">
+                    <label for="worked_hours">Worked Hours:</label><br />
+                    <input
+                      type="number"
+                      id="worked_hours"
+                      name="worked_hours"
+                      min="0"
+                    />
+                  </div>
+    
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Submit</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+  </body>
+</html>

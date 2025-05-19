@@ -1,0 +1,11 @@
+# Python
+*.sqlite3
+
+# Django
+*.sqlite3
+db.sqlite3
+
+# Virtualenv
+venv/
+env/
+
