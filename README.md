@@ -25,8 +25,8 @@ A Django-based task management system with:
 
 ```bash
 
-git clone https://github.com/yourusername/yourproject.git
-cd yourproject
+git clone https://github.com/Jeeshma-asok/Task-Management.git
+cd Task-Management/
 
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
