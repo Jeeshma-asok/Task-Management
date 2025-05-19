@@ -41,3 +41,11 @@ python manage.py createsuperuser
 python manage.py initial_database # Create user roles(Super Admin, Admin, User) and a user as Super Admin
 
 python manage.py runserver
+
+
+## Access the application
+
+- Visit http://localhost:8000
+- login as super admin
+    Username: superadmin
+    Password: superadmin123
