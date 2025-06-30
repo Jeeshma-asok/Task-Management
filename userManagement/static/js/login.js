@@ -101,16 +101,3 @@ function togglePasswordVisibility() {
       toggleIcon.classList.add('fa-eye');
   }
 }
-
-let x = {
-    name: "hi",
-    address: {
-        pin:"123"
-    }
-}
-
-y=JSON.parse(JSON.stringify(x))
-
-y.name = "jlo"
-y.address.pin="456"
-console.log(y,"ggggggggggggggggg", x)
