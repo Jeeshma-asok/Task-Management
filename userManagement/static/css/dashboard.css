@@ -1,0 +1,319 @@
+/* General Table Styling */
+.dashboard-table-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 20px; /* Padding around the table itself */
+    margin-bottom: 30px; /* Space below table containers */
+}
+
+.dashboard-table {
+    width: 100%;
+    margin-bottom: 0; /* Remove default table margin if inside padded container */
+    border-collapse: separate; /* Required for border-radius on cells */
+    border-spacing: 0; /* Remove default spacing for crisp borders */
+}
+
+.dashboard-table thead th {
+    background-color: #34495e; /* Darker header background matching sidebar */
+    color: #ffffff;
+    font-weight: 600;
+    padding: 15px 12px; /* More padding for headers */
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Lighter border for header */
+}
+
+.dashboard-table tbody td {
+    padding: 12px; /* More padding for cells */
+    vertical-align: middle;
+    border-top: 1px solid #e9ecef; /* Light gray border for horizontal separation */
+}
+
+/* Rounded corners for table (top-left, top-right, bottom-left, bottom-right) */
+.dashboard-table thead tr:first-child th:first-child {
+    border-top-left-radius: 8px;
+}
+.dashboard-table thead tr:first-child th:last-child {
+    border-top-right-radius: 8px;
+}
+.dashboard-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+.dashboard-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+/* Remove default Bootstrap border on dashboard-table cells */
+.dashboard-table.table-bordered th,
+.dashboard-table.table-bordered td {
+    border: none; /* We'll use our own borders */
+}
+
+/* Striped rows with a subtle background */
+.dashboard-table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02); /* Very subtle light grey */
+}
+
+/* Hover effect for table rows */
+.dashboard-table tbody tr.table-row-hover:hover {
+    background-color: #e6f7ff; /* Light blue on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow on hover */
+    transform: translateY(-2px); /* Slight lift */
+    transition: all 0.2s ease-in-out;
+}
+
+/* Badge styling for status/counts */
+.badge {
+    font-weight: 600;
+    padding: 0.6em 1em; /* Larger padding for badges */
+    border-radius: 50rem; /* Pill shape */
+    font-size: 0.85em; /* Slightly larger text */
+}
+
+/* Specific button styles within tables */
+.dashboard-table .btn {
+    font-size: 0.8rem; /* Slightly smaller button text for tables */
+    padding: 6px 10px; /* Adjusted padding */
+    border-radius: 5px;
+    display: inline-flex; /* For icon alignment */
+    align-items: center;
+    gap: 5px; /* Space between icon and text */
+    transition: all 0.2s ease-in-out;
+}
+
+.dashboard-table .btn-sm {
+    padding: 5px 8px; /* Standardize small buttons */
+    font-size: 0.75rem;
+}
+
+.dashboard-table .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.dashboard-table .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+
+/* Responsive adjustments for tables */
+@media (max-width: 767.98px) {
+    .dashboard-table-container {
+        padding: 10px;
+    }
+    .dashboard-table thead {
+        display: none; /* Hide header on small screens */
+    }
+    .dashboard-table tbody,
+    .dashboard-table tr,
+    .dashboard-table td {
+        display: block; /* Make table elements behave like blocks */
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .dashboard-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        background-color: #fff;
+    }
+    .dashboard-table td {
+        text-align: right; /* Align content to the right */
+        padding-left: 50%; /* Space for pseudo-element label */
+        position: relative;
+        border-bottom: 1px dashed #f1f1f1; /* Dashed border for inner cell separation */
+    }
+    .dashboard-table td:last-child {
+        border-bottom: none; /* No border for the last cell */
+    }
+    .dashboard-table td::before {
+        content: attr(data-label); /* Use data-label for content */
+        position: absolute;
+        left: 12px;
+        width: calc(50% - 24px); /* Adjust width for spacing */
+        text-align: left;
+        font-weight: 600;
+        color: #555;
+    }
+
+    /* Add data-label attributes to your HTML <td> elements for mobile view */
+    /* Example: <td data-label="Name">{{ user.name }}</td> */
+
+    /* Specific mobile adjustments for action buttons */
+    .dashboard-table td:last-of-type {
+        text-align: center; /* Center buttons on mobile */
+        padding-left: 12px; /* Reset padding if it's the last cell */
+    }
+    .dashboard-table .btn {
+        width: auto; /* Allow buttons to size naturally */
+        margin: 5px; /* Space between buttons */
+    }
+}
+
+/* General Modal Enhancements */
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem); /* Centers modal vertically */
+}
+
+.modal-custom {
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden; /* Ensures border-radius applies to content */
+    border: none; /* Remove default border */
+}
+
+.modal-header-custom {
+    background-color: #f1f5f9; /* Light grey background for header */
+    border-bottom: 1px solid #e0e0e0;
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header-custom .modal-title {
+    color: #34495e; /* Darker title color */
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+}
+
+.modal-header-custom .modal-title i {
+    color: var(--primary-color); /* Icon color */
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer-custom {
+    background-color: #f8f9fa; /* Lighter background for footer */
+    border-top: 1px solid #e0e0e0;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: flex-end; /* Push buttons to the right */
+    gap: 10px; /* Space between buttons */
+}
+
+/* Form Group Styling within Modals */
+.form-group label {
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+    outline: none;
+}
+
+textarea.form-control {
+    resize: vertical; /* Allow vertical resizing for textareas */
+    min-height: 80px;
+}
+
+/* Validation Feedback within Modals */
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: var(--error-color);
+}
+.invalid-feedback {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block; /* Ensure it takes up space for smooth transition */
+    min-height: 1.2em; /* Reserve space to prevent layout shift */
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.form-control.is-invalid + .invalid-feedback,
+.form-select.is-invalid + .invalid-feedback {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Password Toggle Specific Styling */
+.input-group .form-control {
+    border-right: none; /* Remove right border from input in group */
+}
+.input-group .toggle-password {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-left: none;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+}
+.input-group .toggle-password:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* Submit Button Styling */
+.modal-submit-btn {
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.modal-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Select2 for multi-select (Optional, requires library) */
+/* If you integrate Select2, remove default multiple select styles and let Select2 handle it */
+.form-select[multiple] {
+    min-height: 100px; /* Default height for multiple select */
+}
+
+
+/* Responsive adjustments for modals */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 1rem;
+    }
+    .modal-custom {
+        border-radius: 8px;
+    }
+    .modal-header-custom, .modal-body, .modal-footer-custom {
+        padding: 15px 20px;
+    }
+    .modal-header-custom .modal-title {
+        font-size: 1.1rem;
+    }
+    .modal-submit-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .modal-footer-custom {
+        flex-direction: column-reverse; /* Stack buttons on mobile */
+        gap: 8px;
+    }
+    .modal-footer-custom .btn-secondary {
+        width: 100%;
+    }
+}
